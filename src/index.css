@@ -2,12 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* Premium Design System — HSL tokens only */
 @layer base {
   :root {
+    /* Base */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -17,7 +15,13 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    /* Brand palette */
+    --brand-purple: 266 70% 48%;
+    --brand-blue: 225 85% 52%;
+    --brand-teal: 176 70% 44%;
+
+    /* Primary mapped to brand */
+    --primary: var(--brand-purple);
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -36,23 +40,23 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
+    /* Sidebar (unused here but kept for consistency) */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Gradients & shadows */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-blue)) 50%, hsl(var(--brand-teal)) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(210 40% 98%));
+    --shadow-glow: 0 18px 40px -12px hsl(var(--brand-blue) / 0.35);
+    --shadow-glow-lg: 0 28px 60px -18px hsl(var(--brand-teal) / 0.4);
   }
 
   .dark {
@@ -83,23 +87,42 @@ All colors MUST be HSL.
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 5.5%), hsl(222.2 84% 4%));
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground antialiased; }
+}
 
-  body {
-    @apply bg-background text-foreground;
+@layer utilities {
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-subtle { background: var(--gradient-subtle); }
+  .text-gradient {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-glow-lg { box-shadow: var(--shadow-glow-lg); }
+  .hover-scale { @apply transition-transform duration-200 hover:scale-105; }
+  .story-link { @apply relative inline-block; }
+  .story-link::after { content: ""; @apply absolute left-0 bottom-0 h-0.5 w-full origin-bottom-right scale-x-0 bg-primary transition-transform duration-300; }
+  .story-link:hover::after { @apply origin-bottom-left scale-x-100; }
+
+  /* Brochure helpers */
+  .flipbook { @apply select-none; }
+  .flip-page { @apply h-full w-full; }
+  .badge-tile { @apply flex items-center justify-center rounded-md border p-2 text-xs md:text-sm bg-card; }
+  .badge-tile.muted { @apply bg-muted/60 text-muted-foreground; }
+  .icon-card { @apply flex items-center gap-2 rounded-md border p-3 text-sm; }
+  .icon-card svg { @apply h-4 w-4 text-primary; }
+  .list-item { @apply flex items-center gap-2; }
+  .list-item .icon { @apply h-4 w-4 text-primary; }
+  .career-card { @apply rounded-md border p-3 bg-card; }
+  .career-card svg { @apply h-5 w-5 text-primary; }
+  .career-card p { @apply mt-1 text-muted-foreground; }
 }

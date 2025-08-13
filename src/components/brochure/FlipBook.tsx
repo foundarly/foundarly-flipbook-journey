@@ -45,17 +45,19 @@ const PageShell = ({ children, withPadding = true }: { children: React.ReactNode
 
 export default function FlipBook() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const flipRef = useRef<PageFlip | null>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
     const containerEl = containerRef.current;
-    // Capture pages BEFORE PageFlip mutates the container
+    if (!containerEl) return;
+    if (flipRef.current) return; // prevent double init (e.g., React StrictMode)
+
     const pages = containerEl.querySelectorAll(".flip-page");
 
-    const width = isMobile ? 360 : 560;
-    const height = isMobile ? 520 : 740;
+    const isMobileBp = window.matchMedia && window.matchMedia("(max-width: 767px)").matches;
+    const width = isMobileBp ? 360 : 560;
+    const height = isMobileBp ? 520 : 740;
 
     const pf = new PageFlip(containerEl, {
       width,
@@ -64,24 +66,37 @@ export default function FlipBook() {
       maxShadowOpacity: 0.35,
       showCover: true,
       mobileScrollSupport: true,
-      usePortrait: isMobile,
+      usePortrait: isMobileBp,
       disableFlipByClick: false,
     });
 
-    if (pages.length > 0) {
-      pf.loadFromHTML(pages as unknown as NodeListOf<Element>);
-    } else {
-      // In rare cases, schedule on next tick if DOM isn't ready
-      requestAnimationFrame(() => {
-        const retry = containerEl.querySelectorAll(".flip-page");
-        if (retry.length > 0) pf.loadFromHTML(retry as unknown as NodeListOf<Element>);
-      });
-    }
+    flipRef.current = pf;
+
+    const doLoad = (nodeList: NodeListOf<Element>) => {
+      try {
+        pf.loadFromHTML(nodeList);
+      } catch (e) {
+        // no-op: guard any transient failures
+      }
+    };
+
+    if (pages.length > 0) doLoad(pages as unknown as NodeListOf<Element>);
+    else requestAnimationFrame(() => {
+      const retry = containerEl.querySelectorAll(".flip-page");
+      if (retry.length > 0) doLoad(retry as unknown as NodeListOf<Element>);
+    });
 
     return () => {
-      pf.destroy?.();
+      const inst: any = flipRef.current as any;
+      try {
+        if (inst && typeof inst.destroy === "function" && inst.ui) inst.destroy();
+      } catch (_) {
+        // swallow cleanup errors from partial inits
+      } finally {
+        flipRef.current = null;
+      }
     };
-  }, [isMobile]);
+  }, []);
 
   return (
     <main className="min-h-screen py-8 md:py-12 bg-gradient-subtle">

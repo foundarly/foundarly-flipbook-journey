@@ -181,8 +181,8 @@
   }
   
   /* Legacy support for existing components */
-  .badge-tile { @apply interactive-badge; }
-  .badge-tile.muted { @apply interactive-badge muted; }
+  .badge-tile { @apply flex items-center justify-center rounded-lg border p-2 text-xs md:text-sm bg-card transition-all duration-200 hover:shadow-md cursor-pointer; }
+  .badge-tile.muted { @apply bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200 text-gray-600; }
   .icon-card { @apply flex items-center gap-2 rounded-md border p-3 text-sm hover-scale; }
   .icon-card svg { @apply h-4 w-4 text-primary; }
   .list-item { @apply flex items-center gap-2; }

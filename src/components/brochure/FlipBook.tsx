@@ -25,7 +25,7 @@ import {
   Database,
   ShieldCheck,
   Cloud,
-  FileStack,
+  Files,
   MessageCircle,
   ShoppingCart,
   Briefcase,
@@ -66,25 +66,46 @@ const InteractiveCard = ({ icon: Icon, title, description, color = "primary" }: 
   title: string;
   description: string;
   color?: string;
-}) => (
-  <div className="group relative overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-card to-card/80 p-3 hover-scale cursor-pointer transition-all duration-300 hover:shadow-lg">
-    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full" />
-    <div className="relative">
-      <Icon className={`h-6 w-6 text-${color} mb-2 group-hover:scale-110 transition-transform duration-300`} />
-      <h4 className="font-medium text-sm mb-1">{title}</h4>
-      <p className="text-xs text-muted-foreground leading-tight">{description}</p>
+}) => {
+  const colorMap: Record<string, string> = {
+    primary: "text-primary",
+    blue: "text-blue-500",
+    green: "text-green-500",
+    yellow: "text-yellow-500",
+    purple: "text-purple-500",
+    teal: "text-teal-500",
+  };
+  const colorClass = colorMap[color] ?? "text-primary";
+  return (
+    <div className="group relative overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-card to-card/80 p-3 hover-scale cursor-pointer transition-all duration-300 hover:shadow-lg">
+      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full" />
+      <div className="relative">
+        <Icon className={`h-6 w-6 ${colorClass} mb-2 group-hover:scale-110 transition-transform duration-300`} />
+        <h4 className="font-medium text-sm mb-1">{title}</h4>
+        <p className="text-xs text-muted-foreground leading-tight">{description}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const ProgressBadge = ({ week, phase, color }: { week: string; phase: string; color: string }) => (
-  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full bg-${color}/10 border border-${color}/20 text-xs font-medium`}>
-    <div className={`w-2 h-2 rounded-full bg-${color}`} />
-    <span className="text-foreground">{week}</span>
-    <span className="text-muted-foreground">•</span>
-    <span className="text-muted-foreground">{phase}</span>
-  </div>
-);
+const ProgressBadge = ({ week, phase, color }: { week: string; phase: string; color: string }) => {
+  const palette: Record<string, { bg: string; border: string; dot: string }> = {
+    blue: { bg: "bg-blue-50", border: "border-blue-200", dot: "bg-blue-500" },
+    yellow: { bg: "bg-yellow-50", border: "border-yellow-200", dot: "bg-yellow-500" },
+    green: { bg: "bg-green-50", border: "border-green-200", dot: "bg-green-500" },
+    purple: { bg: "bg-purple-50", border: "border-purple-200", dot: "bg-purple-500" },
+    primary: { bg: "bg-primary/10", border: "border-primary/20", dot: "bg-primary" },
+  };
+  const c = palette[color] ?? palette.primary;
+  return (
+    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${c.bg} border ${c.border} text-xs font-medium`}>
+      <div className={`w-2 h-2 rounded-full ${c.dot}`} />
+      <span className="text-foreground">{week}</span>
+      <span className="text-muted-foreground">•</span>
+      <span className="text-muted-foreground">{phase}</span>
+    </div>
+  );
+};
 
 export default function FlipBook() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -683,7 +704,7 @@ export default function FlipBook() {
                       description="Advanced workflows, branching strategies, open source contribution"
                     />
                     <InteractiveCard 
-                      icon={FileStack} 
+                      icon={Files} 
                       title="Professional Resume" 
                       description="ATS-optimized CV, compelling LinkedIn profile, GitHub showcase"
                     />

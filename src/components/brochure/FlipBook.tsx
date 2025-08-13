@@ -148,6 +148,29 @@ export default function FlipBook() {
     };
   }, []);
 
+  // SEO: title, meta description, canonical
+  useEffect(() => {
+    document.title = "Full-Stack Web Developer Course | Upskill Foundarly";
+    const desc = document.querySelector('meta[name="description"]');
+    const content = "Become a full-stack developer in 1 year with hands-on projects, mentorship, and job support.";
+    if (desc) {
+      (desc as HTMLMetaElement).setAttribute('content', content);
+    } else {
+      const m = document.createElement('meta');
+      m.name = 'description';
+      m.content = content;
+      document.head.appendChild(m);
+    }
+    const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (canonical) canonical.href = window.location.href;
+    else {
+      const l = document.createElement('link');
+      l.rel = 'canonical';
+      l.href = window.location.href;
+      document.head.appendChild(l);
+    }
+  }, []);
+
   return (
     <main className="min-h-screen py-4 md:py-8 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -182,7 +205,7 @@ export default function FlipBook() {
                         <span className="text-xs text-primary-foreground/80 ml-1">Rated #1 Course</span>
                       </div>
                       
-                      <h1 className="font-display text-2xl md:text-4xl leading-tight text-primary-foreground animate-fade-in mb-4">
+                      <h1 className="font-display text-xl sm:text-2xl md:text-4xl leading-tight text-primary-foreground animate-fade-in mb-4">
                         Become a Full-Stack Web Developer in 1 Year — Learn by Doing
                       </h1>
                       
@@ -208,7 +231,7 @@ export default function FlipBook() {
                         <div className="px-3 py-1 bg-white/20 rounded-full text-xs font-medium">DevOps</div>
                       </div>
                       
-                      <Button size="lg" variant="hero" className="hover-scale group">
+                      <Button size="lg" variant="hero" className="hover-scale group w-full md:w-auto">
                         <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
                         Start Your Journey
                       </Button>

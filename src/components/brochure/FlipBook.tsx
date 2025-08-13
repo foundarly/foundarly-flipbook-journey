@@ -50,10 +50,14 @@ export default function FlipBook() {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const containerEl = containerRef.current;
+    // Capture pages BEFORE PageFlip mutates the container
+    const pages = containerEl.querySelectorAll(".flip-page");
+
     const width = isMobile ? 360 : 560;
     const height = isMobile ? 520 : 740;
 
-    const pf = new PageFlip(containerRef.current, {
+    const pf = new PageFlip(containerEl, {
       width,
       height,
       size: "stretch",
@@ -64,7 +68,15 @@ export default function FlipBook() {
       disableFlipByClick: false,
     });
 
-    pf.loadFromHTML(containerRef.current.querySelectorAll(".flip-page"));
+    if (pages.length > 0) {
+      pf.loadFromHTML(pages as unknown as NodeListOf<Element>);
+    } else {
+      // In rare cases, schedule on next tick if DOM isn't ready
+      requestAnimationFrame(() => {
+        const retry = containerEl.querySelectorAll(".flip-page");
+        if (retry.length > 0) pf.loadFromHTML(retry as unknown as NodeListOf<Element>);
+      });
+    }
 
     return () => {
       pf.destroy?.();

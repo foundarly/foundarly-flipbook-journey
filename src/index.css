@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -108,17 +109,81 @@
   }
   .shadow-glow { box-shadow: var(--shadow-glow); }
   .shadow-glow-lg { box-shadow: var(--shadow-glow-lg); }
-  .hover-scale { @apply transition-transform duration-200 hover:scale-105; }
+  .hover-scale { 
+    @apply transition-all duration-300 hover:scale-105 active:scale-95; 
+  }
   .story-link { @apply relative inline-block; }
-  .story-link::after { content: ""; @apply absolute left-0 bottom-0 h-0.5 w-full origin-bottom-right scale-x-0 bg-primary transition-transform duration-300; }
-  .story-link:hover::after { @apply origin-bottom-left scale-x-100; }
+  .story-link::after { 
+    content: ""; 
+    @apply absolute left-0 bottom-0 h-0.5 w-full origin-bottom-right scale-x-0 bg-primary transition-transform duration-300; 
+  }
+  .story-link:hover::after { 
+    @apply origin-bottom-left scale-x-100; 
+  }
 
-  /* Brochure helpers */
-  .flipbook { @apply select-none; }
-  .flip-page { @apply h-full w-full; }
-  .badge-tile { @apply flex items-center justify-center rounded-md border p-2 text-xs md:text-sm bg-card; }
-  .badge-tile.muted { @apply bg-muted/60 text-muted-foreground; }
-  .icon-card { @apply flex items-center gap-2 rounded-md border p-3 text-sm; }
+  /* Mobile-first Brochure Components */
+  .flipbook { 
+    @apply select-none touch-pan-y;
+    /* Mobile touch improvements */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .flip-page { 
+    @apply h-full w-full relative;
+  }
+  
+  /* Interactive Badge System */
+  .interactive-badge { 
+    @apply flex items-center justify-center rounded-lg border p-2 text-xs md:text-sm bg-card transition-all duration-200 hover:shadow-md cursor-pointer;
+  }
+  .interactive-badge-active { 
+    @apply bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 text-blue-800 hover:from-blue-100 hover:to-purple-100;
+  }
+  .interactive-badge-practice { 
+    @apply bg-gradient-to-r from-green-50 to-teal-50 border-green-200 text-green-800 hover:from-green-100 hover:to-teal-100;
+  }
+  .interactive-badge.muted { 
+    @apply bg-gradient-to-r from-gray-50 to-gray-100 border-gray-200 text-gray-600;
+  }
+  
+  /* Enhanced Career Cards */
+  .career-card-enhanced {
+    @apply rounded-xl border-2 border-border/50 p-4 bg-gradient-to-br from-card to-card/80 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer;
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card)) 50%, hsl(var(--muted)) 100%);
+  }
+  
+  /* Mobile-optimized spacing */
+  @media (max-width: 640px) {
+    .flip-page {
+      font-size: 14px;
+    }
+    
+    .interactive-badge {
+      @apply px-2 py-1 text-xs;
+    }
+    
+    .career-card-enhanced {
+      @apply p-3;
+    }
+  }
+  
+  /* Enhanced animations for mobile */
+  @media (max-width: 768px) {
+    .hover-scale:active {
+      @apply scale-95;
+    }
+    
+    .interactive-badge:active {
+      @apply scale-95 bg-primary/10;
+    }
+  }
+  
+  /* Legacy support for existing components */
+  .badge-tile { @apply interactive-badge; }
+  .badge-tile.muted { @apply interactive-badge muted; }
+  .icon-card { @apply flex items-center gap-2 rounded-md border p-3 text-sm hover-scale; }
   .icon-card svg { @apply h-4 w-4 text-primary; }
   .list-item { @apply flex items-center gap-2; }
   .list-item .icon { @apply h-4 w-4 text-primary; }
